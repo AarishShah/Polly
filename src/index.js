@@ -1,63 +1,25 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const AWS = require('aws-sdk');
-const cors = require('cors');
-const { Readable } = require('stream');
-const dotenv = require('dotenv');
+const express = require("express");
+const cors = require("cors");
 
-// Load environment variables from .env file
-dotenv.config();
+const mainRouter = require("./routers/mainRoute");
 
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000;
 
-app.use(cors());
-app.use(bodyParser.json());
+// Apply CORS with specific options only once
+app.use(cors({
+  origin: 'http://localhost:5173', // Frontend origin
+  credentials: true, // To handle cookies and authentication
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Allowed HTTP methods
+  allowedHeaders: ['Content-Type', 'Authorization'] // Allowed custom headers
+}));
 
-// Get AWS credentials and region from environment variables
-const awsAccessKeyId = process.env.AWS_ACCESS_KEY_ID;
-const awsSecretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
-const awsRegion = process.env.AWS_REGION;
+// Parse JSON bodies
+app.use(express.json());
 
-// Create a Polly client
-const polly = new AWS.Polly({
-    accessKeyId: awsAccessKeyId,
-    secretAccessKey: awsSecretAccessKey,
-    region: awsRegion
-});
-
-app.post('/synthesize', (req, res) => {
-    const text = req.body.text;
-
-    const params = {
-        Engine: 'standard',
-        Text: text,
-        OutputFormat: 'mp3',
-        VoiceId: 'Joanna'
-    };
-
-    polly.synthesizeSpeech(params, (err, data) => {
-        if (err) {
-            console.error(err);
-            res.status(500).send('Error synthesizing speech');
-        } else if (data && data.AudioStream instanceof Buffer) {
-            const audioStream = new Readable();
-            audioStream._read = () => {}; // _read is required but you can noop it
-            audioStream.push(data.AudioStream);
-            audioStream.push(null);
-
-            res.set({
-                'Content-Type': 'audio/mp3',
-                'Content-Length': data.AudioStream.length
-            });
-
-            audioStream.pipe(res);
-        } else {
-            res.status(500).send('Could not generate audio file');
-        }
-    });
-});
+// Use routers
+app.use(mainRouter);
 
 app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
+  console.log("Server is up on port " + port);
 });
