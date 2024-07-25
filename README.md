@@ -1,70 +1,76 @@
-# Getting Started with Create React App
+# AWS Polly Text-to-Speech Script
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This Python script uses AWS Polly to convert text into speech.
 
-## Available Scripts
+## Prerequisites
 
-In the project directory, you can run:
+Before running this script, make sure you have the following:
 
-### `npm start`
+1. **Python 3.x**: Ensure you have Python 3.x installed on your system.
+2. **AWS Credentials**: You need AWS access key ID and secret access key.
+3. **Environment Variables**: Store your AWS credentials and region in a `.env` file.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Setup
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Install Required Packages
 
-### `npm test`
+Install the required Python packages using pip:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```bash
+pip install boto3 python-dotenv flask flask-cors
 
-### `npm run build`
+```
+If you encounter an error:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```bash
+ModuleNotFoundError: No module named 'urllib3.packages.six.moves'
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```
+Install the required following Python packages using pip:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+pip install --upgrade urllib3 botocore
+```
 
-### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Create a .env File
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Create a `.env` file in the same directory as your script and add your AWS credentials and region:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```
+AWS_ACCESS_KEY_ID=your_access_key_id
+AWS_SECRET_ACCESS_KEY=your_secret_access_key
+AWS_REGION=your_aws_region
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```
 
-## Learn More
+### Explanation
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+1. **Load Environment Variables**: The script loads AWS credentials and region from a `.env` file.
+2. **Create Polly Client**: It creates an AWS Polly client using the provided credentials.
+3. **Synthesize Speech**: The script sends a request to AWS Polly to synthesize speech from the given text.
+4. **Save Audio File**: If the response contains an audio stream, the script writes the audio stream to an MP3 file. If there's an error, it prints an error message.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Error Handling
 
-### Code Splitting
+The script handles potential IO errors when writing the audio stream to the file. It also checks if the `AudioStream` is present in the response to ensure that the synthesis was successful.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+---
+## Developers
 
-### Analyzing the Bundle Size
+- [Syed Aarish Shah](https://www.linkedin.com/in/syed-aarish-shah-6a4811249/)
+- [Khushboo Hamid](https://www.linkedin.com/in/khushboo-hamid-709967224/)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## Contribution
 
-### Making a Progressive Web App
+We welcome contributors to our project!
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+1. **Fork** the repository.
+2. Create your **Feature Branch** (`git checkout -b feature/AmazingFeature`).
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`).
+4. **Push** to the branch (`git push origin feature/AmazingFeature`).
+5. Open a **Pull Request**.
 
-### Advanced Configuration
+## 📜 License
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+This project is licensed under the MIT License. For more details, please refer to the [LICENSE.md](https://opensource.org/license/mit/) file.
